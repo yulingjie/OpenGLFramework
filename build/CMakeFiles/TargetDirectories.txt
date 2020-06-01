@@ -1,3 +1,0 @@
-G:/Documents/Projects/OpenGLFramework/build/CMakeFiles/main.dir
-G:/Documents/Projects/OpenGLFramework/build/CMakeFiles/ALL_BUILD.dir
-G:/Documents/Projects/OpenGLFramework/build/CMakeFiles/ZERO_CHECK.dir

@@ -17,6 +17,8 @@ set(EXEC main)
 
 add_executable(${EXEC} 
 	./src/main.cpp
+	./src/Shader.cpp
+	./src/Shader.h
 	./deps/glad/src/glad.c
 	)
 
