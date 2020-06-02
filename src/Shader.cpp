@@ -19,7 +19,7 @@ void Shader::compile(const char* vertexPath, const char* fragmentPath)
 		fShaderFile.open(m_basePath + fragmentPath);
 		std::stringstream vShaderStream, fShaderStream;
 		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderStream.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
 		vShaderFile.close();
 		fShaderFile.close();
 
@@ -56,7 +56,7 @@ void Shader::compile(const char* vertexPath, const char* fragmentPath)
 	if (!success)
 	{
 		glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 	ID = glCreateProgram();
 	glAttachShader(ID, vertex);

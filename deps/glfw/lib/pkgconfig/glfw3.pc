@@ -1,7 +1,7 @@
-prefix=G:/Documents/Projects/glfw/install
+prefix=
 exec_prefix=${prefix}
-includedir=G:/Documents/Projects/glfw/install/include
-libdir=G:/Documents/Projects/glfw/install/lib
+includedir=/include
+libdir=/lib
 
 Name: GLFW
 Description: A multi-platform library for OpenGL, window and input
