@@ -20,6 +20,8 @@ add_executable(${EXEC}
 	./src/Shader.cpp
 	./src/Shader.h
 	./deps/glad/src/glad.c
+	./assets/shaders/vertex.glsl
+	./assets/shaders/fragment.glsl
 	)
 
 set(GLFW3_INCLUDE_DIRS ./deps/glfw/include)
