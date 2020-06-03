@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Shader.h"
+#include "config.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -61,8 +62,11 @@ int main()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	Shader ourShader("C:/Software/msys64/home/yulingjie/OpenGLFramework");
+	std::string basePath = ".";
+#ifdef USE_CURRENT_PATH
+	basePath = CURRENT_PATH;
+#endif
+	Shader ourShader(basePath.c_str());
 	ourShader.compile("/assets/shaders/vertex.glsl", "/assets/shaders/fragment.glsl");
 	
 
