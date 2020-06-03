@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "config.h"
+#include "tiny_obj_loader.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -15,13 +16,6 @@ void processInput(GLFWwindow * window)
 		glfwSetWindowShouldClose(window, true);
 	}
 }
-
-float vertices[] = {
-	// positions			// colors
-	0.5f, -0.5f, 0.0f,		1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,
-	0.0f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f
-};
 
 int main()
 {
@@ -48,6 +42,31 @@ int main()
 	glViewport(0, 0, 800, 600);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+	std::string basePath = ".";
+
+#ifdef USE_CURRENT_PATH
+	basePath = CURRENT_PATH;
+#endif
+
+	tinyobj::ObjReader reader;
+	tinyobj::ObjReaderConfig config;
+	config.vertex_color = false;
+	config.triangulate = false;
+	if (!reader.ParseFromFile(basePath + "/assets/objs/cube.obj", config))
+	{
+		std::cout << "Error!! ParseFromFile Failed!!" << std::endl;
+	}
+
+	tinyobj::attrib_t attrib = reader.GetAttrib();
+	const std::vector<tinyobj::shape_t> shapes = reader.GetShapes();
+	tinyobj::shape_t cube = shapes[0];
+	
+	std::vector<int> indices;
+	for (int i = 0; i < cube.mesh.indices.size(); ++i)
+	{
+		indices.push_back(cube.mesh.indices[i].vertex_index);
+	}
+
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -55,17 +74,20 @@ int main()
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tinyobj::real_t) * (attrib.vertices.size()), attrib.vertices.data(), GL_STATIC_DRAW);
+	
+	GLuint IndexVBO;
+	glGenBuffers(1, &IndexVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+	
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(tinyobj::real_t), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	std::string basePath = ".";
-#ifdef USE_CURRENT_PATH
-	basePath = CURRENT_PATH;
-#endif
+
+//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+//	glEnableVertexAttribArray(1);
+	
 	Shader ourShader(basePath.c_str());
 	ourShader.compile("/assets/shaders/vertex.glsl", "/assets/shaders/fragment.glsl");
 	
@@ -80,7 +102,7 @@ int main()
 
 		ourShader.use();
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, indices.size(),GL_UNSIGNED_INT,(void*)0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

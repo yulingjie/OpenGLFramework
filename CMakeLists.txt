@@ -30,8 +30,12 @@ set(EXEC main)
 add_executable(${EXEC} 
 	./src/main.cpp
 	./src/Shader.cpp
-	./src/Shader.h
-	./deps/glad/src/glad.c
+	./src/Shader.h	
+	./src/Camera.h
+	./src/Camera.cpp	
+	./deps/glad/src/glad.c	
+	./deps/tinyobjloader/tiny_obj_loader.cc
+	./deps/tinyobjloader/tiny_obj_loader.h	
 	./assets/shaders/vertex.glsl
 	./assets/shaders/fragment.glsl	
 	)
@@ -40,7 +44,9 @@ set(GLFW3_INCLUDE_DIRS ./deps/glfw/include)
 
 target_include_directories(${EXEC}
 	PUBLIC ${GLFW3_INCLUDE_DIRS}
-	PUBLIC ./deps/glad/include	
+	PUBLIC ./deps/glad/include		
+	PUBLIC ./deps/tinyobjloader
+	PUBLIC ./deps/glm
 )
 target_link_libraries(${EXEC} 
 	glfw)
