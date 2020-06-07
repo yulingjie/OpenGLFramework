@@ -1,9 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include "Shader.h"
 #include "config.h"
-#include "tiny_obj_loader.h"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -47,26 +50,12 @@ int main()
 #ifdef USE_CURRENT_PATH
 	basePath = CURRENT_PATH;
 #endif
+	//const std::string cube_path = basePath+ "/assets/shaders/"
+	Assimp::Importer importer;
 
-	tinyobj::ObjReader reader;
-	tinyobj::ObjReaderConfig config;
-	config.vertex_color = false;
-	config.triangulate = false;
-	if (!reader.ParseFromFile(basePath + "/assets/objs/cube.obj", config))
-	{
-		std::cout << "Error!! ParseFromFile Failed!!" << std::endl;
-	}
-
-	tinyobj::attrib_t attrib = reader.GetAttrib();
-	const std::vector<tinyobj::shape_t> shapes = reader.GetShapes();
-	tinyobj::shape_t cube = shapes[0];
+	const aiScene* scene = importer.ReadFile()
 	
-	std::vector<int> indices;
-	for (int i = 0; i < cube.mesh.indices.size(); ++i)
-	{
-		indices.push_back(cube.mesh.indices[i].vertex_index);
-	}
-
+	
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
