@@ -1,6 +1,6 @@
-Remove-Item .\build -Recures -Force
-
+echo off
+del /F /S /Q build 
+if not exist build (mkdir build)
 cd build
-rm -r -fo *
 cmake -DCMAKE_TOOLCHAIN_FILE=C:\\Software\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake ..
 cd ..
