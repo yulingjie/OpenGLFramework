@@ -9,36 +9,25 @@ if(USE_CURRENT_PATH)
 endif()
 configure_file(config.h.ini ${CMAKE_SOURCE_DIR}/src/config.h)
 
-
-if(NOT CMAKE_CL_64)	
-	find_package(glfw3 3.3 REQUIRED PATHS ./deps/glfw/x86/lib/cmake/glfw3)
-	
-else()
-	find_package(glfw3 3.3 REQUIRED PATHS ./deps/glfw/x64/lib/cmake/glfw3)
-find_package(assimp REQUIRED PATHS ./deps/assimp/x64/lib/cmake/assimp-5.0)
-endif()
+find_package(assimp CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 
-if (NOT ${glfw3_FOUND})
-	message(FATAL_ERROR "glfw3 not found!")
-endif (NOT ${glfw3_FOUND})
-
-message(STATUS "glfw3_FOUND is ${glfw3_FOUND}")
-
-message(STATUS "${GLFW3_LIBRARIES}")
-message(STATUS "${ASSIMP_LIBRARIES}")
 
 set(EXEC main)
+
 
 
 add_executable(${EXEC} 
 	./src/main.cpp
 	./src/Shader.cpp
 	./src/Shader.h	
-	./src/Camera.h
-	./src/Camera.cpp	
+##	./src/Camera.h
+##	./src/Camera.cpp	
+	./src/Mesh.h
+	./src/Mesh.cpp
 	./deps/glad/src/glad.c	
-
 	./assets/shaders/vertex.glsl
 	./assets/shaders/fragment.glsl	
 	)
@@ -46,11 +35,13 @@ add_executable(${EXEC}
 set(GLFW3_INCLUDE_DIRS ./deps/glfw/include)
 
 target_include_directories(${EXEC}
-	PUBLIC ${GLFW3_INCLUDE_DIRS}
+#	PUBLIC ${GLFW3_INCLUDE_DIRS}
 	PUBLIC ./deps/glad/include		
-	PUBLIC ./deps/assimp/x64/include
+#	PUBLIC ./deps/assimp/x64/include
 	PUBLIC ./deps/glm
 )
 target_link_libraries(${EXEC} 
-	glfw
-	assimp)
+	PRIVATE assimp::assimp
+	PRIVATE glfw
+	PRIVATE glm
+)

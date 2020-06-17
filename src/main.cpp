@@ -6,6 +6,9 @@
 #include <assimp/postprocess.h>
 #include "Shader.h"
 #include "config.h"
+#include <vector>
+#include <glm/ext.hpp>
+#include "Mesh.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -19,6 +22,7 @@ void processInput(GLFWwindow * window)
 		glfwSetWindowShouldClose(window, true);
 	}
 }
+
 
 int main()
 {
@@ -50,29 +54,45 @@ int main()
 #ifdef USE_CURRENT_PATH
 	basePath = CURRENT_PATH;
 #endif
-	//const std::string cube_path = basePath+ "/assets/shaders/"
+	// load model
+	const std::string cube_path = basePath + "/assets/objs/cube.obj";
 	Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile()
+	const aiScene* scene = importer.ReadFile(cube_path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		std::cout << "load mesh error" << importer.GetErrorString() << std::endl;
+		return -1;
+	}
+	//std::vector<Mesh> meshes;
+	
+	Mesh cube = Mesh::processMesh(scene->mMeshes[0], scene);
+	
+
+
 	
 	
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
+	
 	GLuint VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(tinyobj::real_t) * (attrib.vertices.size()), attrib.vertices.data(), GL_STATIC_DRAW);
-	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * cube.vertices.size(),&cube.vertices[0], GL_STATIC_DRAW);
+
 	GLuint IndexVBO;
 	glGenBuffers(1, &IndexVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.size(), indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * cube.indices.size(), &cube.indices[0], GL_STATIC_DRAW);
 	
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(tinyobj::real_t), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
+
+
+	glBindVertexArray(0);
 
 //	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 //	glEnableVertexAttribArray(1);
@@ -80,6 +100,17 @@ int main()
 	Shader ourShader(basePath.c_str());
 	ourShader.compile("/assets/shaders/vertex.glsl", "/assets/shaders/fragment.glsl");
 	
+	glm::mat4 view = glm::lookAt(glm::vec3(5.f, 5.f, 5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
+	glm::mat4 proj = glm::perspective(glm::radians(45.f), 800.f / 600.f, 0.1f, 100.0f);
+	ourShader.use();
+
+
+	ourShader.setMat4("projection", proj);
+	glm::vec3 cubePosition = glm::vec3(0.0f, 0.0f, -10.0f);
+	glm::mat4 model = glm::mat4(1.0f);
+	//model = glm::translate(model, cubePosition);
+	ourShader.setMat4("model", model);
+	ourShader.setMat4("view",view);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -89,10 +120,10 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		ourShader.use();
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(),GL_UNSIGNED_INT,(void*)0);
-
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawElements(GL_TRIANGLES,cube.indices.size(), GL_UNSIGNED_INT, (const void*)(0));
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
