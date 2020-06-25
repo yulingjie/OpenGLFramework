@@ -91,6 +91,9 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	// normal attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float) * 3));
+	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);
 
@@ -111,6 +114,8 @@ int main()
 	//model = glm::translate(model, cubePosition);
 	ourShader.setMat4("model", model);
 	ourShader.setMat4("view",view);
+	ourShader.setVec3("objectColor", glm::vec3(0.4, 0.4, 0.4));
+	ourShader.setVec3("lightColor", glm::vec3(1, 1, 1));
 
 	while (!glfwWindowShouldClose(window))
 	{
