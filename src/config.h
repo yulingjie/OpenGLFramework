@@ -1,2 +1,2 @@
 #define USE_CURRENT_PATH
-#define CURRENT_PATH "C:/Software/msys64/home/yulingjie/OpenGLFramework"
+#define CURRENT_PATH "/Users/lingjieyu/OpenGLFramework"

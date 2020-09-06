@@ -10,9 +10,11 @@
 #include <glm/ext.hpp>
 #include "Mesh.h"
 
+#define ASSET_UNUSE(x) ((void)x)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+    ASSET_UNUSE(window);
 	glViewport(0, 0, width, height);
 }
 void processInput(GLFWwindow * window)
@@ -29,7 +31,8 @@ int main()
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Framework", NULL, NULL);
 	if (window == NULL)
