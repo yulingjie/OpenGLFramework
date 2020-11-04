@@ -18,14 +18,17 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec4 OutColor;
+out vec3 OutColor;
 out vec3 Normal;
+out vec3 WorldPos;
 void main()
 {
 	float ambientStrength = 0.2;
 	vec3 ambient = ambientStrength * lightColor;
-	vec3 result = ambient * objectColor;
-	OutColor = vec4(result,1.0);
+	//vec3 result = ambient * objectColor;
+	//OutColor = vec4(result,1.0);
+    OutColor = ambient;
 	gl_Position = projection * view * model *  vec4(aPos, 1.0);
-	Normal = aNormal;
+    WorldPos =vec3(model * vec4(aPos,1.0));
+	Normal = mat3(transpose(inverse(model))) * aNormal;
 }

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 project (OpenGLFramework)
 
-
 set (CMAKE_CXX_STANDARD 11)
 option(USE_CURRENT_PATH "Enable Current Path" ON)
 if(USE_CURRENT_PATH)
@@ -12,10 +11,14 @@ configure_file(config.h.ini ${CMAKE_SOURCE_DIR}/src/config.h)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(assimp CONFIG REQUIRED)
+#find_package(PkgConfig CONFIG REQUIRED)
+find_package(PNG REQUIRED)
 
 
+message("${CMAKE_MODULE_PATH}")
+message("${PNG_LIBRARIES}")
 
-
+#pkg_check_modules(PNG REQUIRED libpng)
 set(EXEC main)
 
 
@@ -33,7 +36,7 @@ add_executable(${EXEC}
 	./assets/shaders/fragment.glsl
 	)
 
-set(GLFW3_INCLUDE_DIRS ./deps/glfw/include)
+#set(GLFW3_INCLUDE_DIRS ./deps/glfw/include)
 
 target_include_directories(${EXEC}
 #	PUBLIC ${GLFW3_INCLUDE_DIRS}
@@ -47,6 +50,7 @@ target_link_libraries(${EXEC}
 	PRIVATE glfw
 	PRIVATE glm::glm
     PRIVATE "${ASSIMP_LIBRARY_DIRS}/${ASSIMP_LIBRARIES}"
+    #    PRIVATE PNG::PNG
     )
 
 message ("${ASSIMP_LIBRARIES}")

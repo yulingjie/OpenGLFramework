@@ -69,6 +69,10 @@ flags = [
 '/usr/local/include',
 '-I',
 '/Users/lingjieyu/OpenGLFramework/deps/glad/include',
+'-I'
+'/usr/local/Cellar/libpng/1.6.37/include',
+'-I',
+'/usr/local/Cellar/glfw/3.3.2/include'
 #'-isystem',
 #'cpp/llvm/tools/clang/include',
 '-I',
