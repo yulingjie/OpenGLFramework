@@ -180,6 +180,7 @@ int main()
     ourShader.setVec3("lightColor", glm::vec3(1, 1, 1));
     glm::vec3 lightPos = glm::vec3(0,0,20);
     ourShader.setVec3("lightPos",lightPos);
+    ourShader.setVec3("viewPos", cameraPos); 
 
 
     while (!glfwWindowShouldClose(window))
